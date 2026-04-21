@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
+import { getAuth } from "firebase/auth";
 import { 
   getAuth, 
   signInWithCustomToken, 
@@ -35,7 +36,8 @@ import {
   Check,
   RotateCcw
 } from 'lucide-react';
-
+const auth = getAuth();
+const uid = auth.currentUser.uid;
 // --- Firebase Configuration & Initialization ---
 const firebaseConfig = {
   apiKey: "AIzaSyAPfRV9LiR_5tMf_MGVtwmk_OckT_7aXDo",
@@ -158,8 +160,9 @@ const App = () => {
     if (!user) return;
 
     setLoading(true);
-    const momsCol = collection(db, 'artifacts', appId, 'public', 'data', 'moms');
-    const periodsCol = collection(db, 'artifacts', appId, 'public', 'data', 'periods');
+    const momsCol = collection( db,'artifacts',appId, 'users',uid,'moms');
+
+    const periodsCol = collection(db, 'artifacts', appId, 'users',uid, 'periods');
 
     const unsubMoms = onSnapshot(momsCol, (snapshot) => {
       setMoms(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
@@ -181,7 +184,8 @@ const App = () => {
   const handleAddMom = async (momData) => {
     if (!user) return;
     try {
-      const momsCol = collection(db, 'artifacts', appId, 'public', 'data', 'moms');
+      const momsCol = collection(db,'artifacts',appId,'users',uid,'moms');
+
       await addDoc(momsCol, { ...momData, children: [] });
       setIsAddingMom(false);
     } catch (e) {
@@ -276,7 +280,7 @@ const App = () => {
     }
 
     try {
-      const periodsCol = collection(db, 'artifacts', appId, 'public', 'data', 'periods');
+       const periodsCol = collection(db, 'artifacts', appId, 'users',uid, 'periods');
       await addDoc(periodsCol, period);
     } catch (e) {
       console.error(e);
