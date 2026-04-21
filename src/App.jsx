@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from "firebase/auth";
 import { 
   getAuth, 
   signInWithCustomToken, 
@@ -36,7 +35,8 @@ import {
   Check,
   RotateCcw
 } from 'lucide-react';
-
+const auth = getAuth();
+const uid = auth.currentUser.uid;
 // --- Firebase Configuration & Initialization ---
 const firebaseConfig = {
   apiKey: "AIzaSyAPfRV9LiR_5tMf_MGVtwmk_OckT_7aXDo",
